@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malika Neural Core v4.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #8ffcff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Grid */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 51, 68, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 51, 68, 0.1) 1px, transparent 1px);
+            background-size: 44px 44px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, #00080d 0%, #001520 100%);
+            border-bottom: 2px solid #007a99;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: #007a99;
+            letter-spacing: 1px;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .badge {
+            color: #003344;
+            font-weight: bold;
+        }
+
+        .time-display {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 120px);
+            position: relative;
+            z-index: 5;
+            padding: 20px;
+        }
+
+        /* Avatar Container */
+        .avatar-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        /* Glowing Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+            animation-delay: 0.5s;
+        }
+
+        .orb-3 {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+            animation-delay: 1s;
+        }
+
+        .orb-4 {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Rotating Rings */
+        .ring {
+            position: absolute;
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+
+        .ring-1 {
+            width: 260px;
+            height: 260px;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            animation-duration: 8s;
+        }
+
+        .ring-2 {
+            width: 230px;
+            height: 230px;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        .ring-3 {
+            width: 200px;
+            height: 200px;
+            border-style: dashed;
+            animation-duration: 15s;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Avatar Circle */
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00d4ff 0%, #007a99 50%, #003344 100%);
+            box-shadow: 
+                0 0 40px rgba(0, 212, 255, 0.6),
+                0 0 80px rgba(0, 212, 255, 0.4),
+                inset 0 0 40px rgba(0, 212, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
+            color: #000000;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .avatar.speaking {
+            animation: avatarPulse 0.5s ease-in-out infinite;
+            box-shadow: 
+                0 0 60px rgba(0, 212, 255, 0.8),
+                0 0 100px rgba(0, 212, 255, 0.6),
+                inset 0 0 60px rgba(0, 212, 255, 0.5);
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Status Display */
+        .status-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .status-text.speaking {
+            color: #ff6600;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        /* Audio Visualizer */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            height: 40px;
+            margin-bottom: 30px;
+        }
+
+        .bar {
+            width: 6px;
+            background: linear-gradient(180deg, #00d4ff 0%, #007a99 100%);
+            border-radius: 3px;
+            transition: height 0.1s ease;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .visualizer.active .bar {
+            animation: barPulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes barPulse {
+            0%, 100% { height: 10px; }
+            50% { height: var(--max-height, 30px); }
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(1, 12, 16, 0.9);
+            border: 1px solid #007a99;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, #001520 0%, #003344 100%);
+            padding: 12px 20px;
+            border-bottom: 1px solid #007a99;
+            font-size: 14px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(1, 12, 16, 0.8);
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #001520;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #007a99;
+            border-radius: 3px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        .message.system {
+            background: rgba(255, 204, 0, 0.1);
+            border-left: 3px solid #ffcc00;
+            color: #ffcc00;
+        }
+
+        .message.user {
+            background: rgba(232, 232, 232, 0.05);
+            border-left: 3px solid #e8e8e8;
+            color: #e8e8e8;
+        }
+
+        .message.ai {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid #00d4ff;
+            color: #00d4ff;
+        }
+
+        .message-label {
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: rgba(1, 12, 16, 0.95);
+            border-top: 1px solid #007a99;
+        }
+
+        .input-field {
+            flex: 1;
+            background: rgba(0, 21, 32, 0.8);
+            border: 1px solid #007a99;
+            border-radius: 4px;
+            padding: 12px 15px;
+            color: #8ffcff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .input-field::placeholder {
+            color: #003344;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #007a99 100%);
+            color: #000000;
+            border: none;
+            padding: 12px 30px;
+            margin-left: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #00080d;
+            border-top: 1px solid #003344;
+            padding: 8px;
+            text-align: center;
+            font-size: 10px;
+            color: #003344;
+            z-index: 10;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 20px;
+            }
+
+            .avatar-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .avatar {
+                width: 150px;
+                height: 150px;
+                font-size: 50px;
+            }
+
+            .chat-messages {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">MALIKA</div>
+        <div class="header-subtitle">Just A Rather Very Intelligent System</div>
+        <div class="header-info">
+            <div class="badge">MALIKA CORE v4.0</div>
+            <div class="time-display" id="timeDisplay">00:00:00</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Avatar Section -->
+        <div class="avatar-container">
+            <!-- Glowing Orbs -->
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="orb orb-4"></div>
+
+            <!-- Rotating Rings -->
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+
+            <!-- Avatar -->
+            <div class="avatar" id="avatar">M</div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-display">
+            <div class="status-text" id="statusText">○ INITIALISING</div>
+        </div>
+
+        <!-- Audio Visualizer -->
+        <div class="visualizer" id="visualizer"></div>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+            <div class="chat-header">COMMUNICATION LOG</div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="inputField" 
+                    placeholder="Enter your message..."
+                    autocomplete="off"
+                >
+                <button class="send-btn" id="sendBtn">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Malika Core  ·  NEURAL ASSISTANT  ·  BUILD 4.0
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const inputField = document.getElementById('inputField');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusText = document.getElementById('statusText');
+        const avatar = document.getElementById('avatar');
+        const visualizer = document.getElementById('visualizer');
+        const timeDisplay = document.getElementById('timeDisplay');
+
+        let isSpeaking = false;
+        let statusBlink = true;
+
+        // Create visualizer bars
+        for (let i = 0; i < 32; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = '10px';
+            bar.style.setProperty('--max-height', `${Math.random() * 30 + 10}px`);
+            bar.style.animationDelay = `${i * 0.05}s`;
+            visualizer.appendChild(bar);
+        }
+
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            timeDisplay.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Status blink
+        setInterval(() => {
+            if (!isSpeaking) {
+                statusBlink = !statusBlink;
+                updateStatus();
+            }
+        }, 1000);
+
+        function updateStatus() {
+            if (isSpeaking) {
+                statusText.textContent = '● SPEAKING';
+                statusText.className = 'status-text speaking';
+            } else {
+                statusText.textContent = `${statusBlink ? '●' : '○'} ONLINE`;
+                statusText.className = 'status-text';
+            }
+        }
+
+        // Add message to chat
+        function addMessage(type, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            let label = '';
+            if (type === 'system') label = '[SYS]';
+            else if (type === 'user') label = 'YOU';
+            else if (type === 'ai') label = 'MALIKA';
+
+            messageDiv.innerHTML = `
+                <span class="message-label">${label}:</span>
+                <span>${text}</span>
+            `;
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Generate AI response
+        function generateResponse(query) {
+            query = query.toLowerCase();
+
+            if (query.includes('hello') || query.includes('hi')) {
+                return 'Greetings! I am Malika, your advanced neural assistant. How may I help you today?';
+            }
+            if (query.includes('time')) {
+                return `Current time: ${new Date().toLocaleTimeString()}`;
+            }
+            if (query.includes('date')) {
+                return `Current date: ${new Date().toLocaleDateString()}`;
+            }
+            if (query.includes('status')) {
+                return 'All systems operational. Neural Core: ONLINE | Voice Module: READY | Network: CONNECTED';
+            }
+            if (query.includes('help')) {
+                return 'Available commands: hello, time, date, status, help. I can assist you with various tasks!';
+            }
+            return 'Processing your request... Analyzing data and preparing comprehensive response.';
+        }
+
+        // Handle send
+        function handleSend() {
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            addMessage('user', text);
+            inputField.value = '';
+
+            // Set speaking state
+            isSpeaking = true;
+            avatar.classList.add('speaking');
+            visualizer.classList.add('active');
+            updateStatus();
+
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateResponse(text);
+                addMessage('ai', response);
+
+                // Reset state
+                isSpeaking = false;
+                avatar.classList.remove('speaking');
+                visualizer.classList.remove('active');
+                updateStatus();
+            }, 1500);
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', handleSend);
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSend();
+            }
+        });
+
+        // Initial messages
+        setTimeout(() => {
+            addMessage('system', 'MALIKA NEURAL CORE v4.0 - INITIALIZING...');
+        }, 500);
+
+        setTimeout(() => {
+            addMessage('system', 'All systems operational. Ready to assist.');
+            inputField.focus();
+        }, 1500);
+
+        // Focus input on click
+        document.addEventListener('click', () => {
+            inputField.focus();
+        });
+    </script>
+</body>
+</html>
